@@ -19,9 +19,12 @@ namespace kino
 
         private void CustomizeUI()
         {
+            // Увеличение размеров формы
+            this.Size = new Size(900, 700); // Ширина 900, Высота 700
+            this.StartPosition = FormStartPosition.CenterScreen;
             this.BackColor = Color.DarkRed;
             this.ForeColor = Color.White;
-            this.Font = new Font("Arial", 10, FontStyle.Bold);
+            this.Font = new Font("Arial", 12, FontStyle.Bold);
 
             foreach (Control c in this.Controls)
             {
@@ -42,9 +45,27 @@ namespace kino
                     txt.BackColor = Color.Black;
                     txt.ForeColor = Color.White;
                     txt.BorderStyle = BorderStyle.FixedSingle;
+                    txt.Width = 200;
+
+                    // Disable input for textBox1 (movie name) and textBox2 (movie year)
+                    if (txt == textBox1 || txt == textBox2)
+                    {
+                        txt.ReadOnly = true;
+                    }
                 }
             }
+
+            // Увеличенный PictureBox, размещаем его выше
             pictureBox1.BackColor = Color.Black;
+            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBox1.Size = new Size((int)(this.ClientSize.Width * 0.7), (int)(this.ClientSize.Height * 0.5));
+            pictureBox1.Location = new Point((this.ClientSize.Width - pictureBox1.Width) / 2, 20);
+
+            // Перемещение текстовых полей и кнопок ниже картинки
+            textBox1.Location = new Point((this.ClientSize.Width - textBox1.Width) / 2, pictureBox1.Bottom + 20);
+            textBox2.Location = new Point((this.ClientSize.Width - textBox2.Width) / 2, textBox1.Bottom + 10);
+            button1.Location = new Point((this.ClientSize.Width - button1.Width) / 2, textBox2.Bottom + 20);
+            button2.Location = new Point((this.ClientSize.Width - button2.Width) / 2, button1.Bottom + 20);
         }
 
         int tt = 0;
@@ -62,7 +83,6 @@ namespace kino
             {
                 try
                 {
-                    pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
                     connection.Open();
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
@@ -98,8 +118,41 @@ namespace kino
         {
             textBox1.Text = names[tt];
             textBox2.Text = years[tt];
-            pictureBox1.Image = LoadImageFromUrl(pildid[tt]);
+
+            Image img = LoadImageFromUrl(pildid[tt]);
+            if (img != null)
+            {
+                pictureBox1.Image = img;
+                AdjustPictureBoxSize(img);
+            }
+
             tt = (tt + 1) % pildid.Count;
+        }
+
+        private void AdjustPictureBoxSize(Image img)
+        {
+            int maxWidth = (int)(this.ClientSize.Width * 0.7); // 70% ширины формы
+            int maxHeight = (int)(this.ClientSize.Height * 0.5); // 50% высоты формы
+
+            int newWidth = img.Width;
+            int newHeight = img.Height;
+
+            if (newWidth > maxWidth || newHeight > maxHeight)
+            {
+                double ratioX = (double)maxWidth / newWidth;
+                double ratioY = (double)maxHeight / newHeight;
+                double ratio = Math.Min(ratioX, ratioY);
+
+                newWidth = (int)(newWidth * ratio);
+                newHeight = (int)(newHeight * ratio);
+            }
+
+            // Увеличение до 90% доступного места
+            newWidth = Math.Min((int)(newWidth * 1.3), maxWidth);
+            newHeight = Math.Min((int)(newHeight * 1.3), maxHeight);
+
+            pictureBox1.Size = new Size(newWidth, newHeight);
+            pictureBox1.Location = new Point((this.ClientSize.Width - newWidth) / 2, 20);
         }
 
         private Image LoadImageFromUrl(string imageUrl)
