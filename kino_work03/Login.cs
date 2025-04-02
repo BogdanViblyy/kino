@@ -34,12 +34,12 @@ namespace kino
                     btn.FlatAppearance.BorderSize = 1;
                     btn.FlatAppearance.BorderColor = Color.White;
 
-                    
-                    if (btn.Name == "buttonLogin") 
+
+                    if (btn.Name == "buttonLogin")
                     {
                         btn.Click += buttonLogin_Click;
                     }
-                    else if (btn.Name == "buttonRegister") 
+                    else if (btn.Name == "buttonRegister")
                     {
                         btn.Click += buttonRegister_Click;
                     }
@@ -106,12 +106,23 @@ namespace kino
 
                         int userCount = Convert.ToInt32(command.ExecuteScalar());
 
-                        if (userCount == 1) 
+                        if (userCount == 1)
                         {
-                            MessageBox.Show("Вы успешно вошли в систему!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            this.Hide();
-                            User_choose user_Choose = new User_choose();
-                            user_Choose.Show();
+                            if (login == "Admin" && password == "123")
+                            {
+                                MessageBox.Show("Вы вошли как Admin!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                this.Hide();
+                                Admin Admin = new Admin();
+                                Admin.Show();
+                                return;
+                            }
+                            else
+                            {
+                                MessageBox.Show("Вы успешно вошли в систему!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                this.Hide();
+                                User_choose user_Choose = new User_choose();
+                                user_Choose.Show();
+                            }
                         }
                         else
                         {
@@ -135,7 +146,7 @@ namespace kino
                 try
                 {
                     connection.Open();
-                    
+
                     string checkQuery = "SELECT COUNT(1) FROM users WHERE userName = @Login";
                     using (SqlCommand checkCommand = new SqlCommand(checkQuery, connection))
                     {

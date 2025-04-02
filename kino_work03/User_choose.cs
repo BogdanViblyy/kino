@@ -62,6 +62,7 @@ namespace kino
             pictureBox1.Location = new Point((this.ClientSize.Width - pictureBox1.Width) / 2, 20);
 
             // Перемещение текстовых полей и кнопок ниже картинки
+
             textBox1.Location = new Point((this.ClientSize.Width - textBox1.Width) / 2, pictureBox1.Bottom + 20);
             textBox2.Location = new Point((this.ClientSize.Width - textBox2.Width) / 2, textBox1.Bottom + 10);
             button1.Location = new Point((this.ClientSize.Width - button1.Width) / 2, textBox2.Bottom + 20);

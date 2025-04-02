@@ -18,8 +18,12 @@ namespace kino
         {
             InitializeComponent();
             this.filmName = filmName;
-            LoadSeats();  // Load seat statuses from the database at app start
-            CreateSeatButtons(); // Dynamically create seat buttons
+            this.BackColor = Color.DarkRed; // Изменение цвета фона
+            LoadSeats();  // Загрузка статусов мест из БД
+            CreateSeatButtons(); // Создание кнопок мест
+            textBox1.Text = filmName;
+            textBox1.ReadOnly = true;
+            textBox1.Enabled = false;
         }
 
         private void LoadSeats()
@@ -54,7 +58,7 @@ namespace kino
         private void CreateSeatButtons()
         {
             int startX = 50, startY = 50, buttonSize = 50, gap = 10;
-            char[] rows = { 'A', 'B' };
+            char[] rows = { 'A', 'B', 'C' };
             int columns = 5;
 
             foreach (char row in rows)
@@ -78,18 +82,31 @@ namespace kino
                 }
             }
 
-            // Add "Book Tickets" button
+            // Кнопка бронирования билетов
             Button bookButton = new Button
             {
                 Name = "button_buy",
                 Text = "Book Tickets",
                 Size = new Size(200, 40),
-                Location = new Point(startX, startY + 150),
+                Location = new Point(startX, startY + 250), // Переместил ниже
                 BackColor = Color.Green,
                 ForeColor = Color.White
             };
             bookButton.Click += button_buy_Click;
             this.Controls.Add(bookButton);
+
+            // Кнопка возврата
+            Button backButton = new Button
+            {
+                Name = "button18",
+                Text = "Back",
+                Size = new Size(100, 40),
+                Location = new Point(startX, startY + 300),
+                BackColor = Color.Gray,
+                ForeColor = Color.White
+            };
+            backButton.Click += button18_Click;
+            this.Controls.Add(backButton);
         }
 
         private void SeatButton_Click(object sender, EventArgs e)
@@ -101,12 +118,12 @@ namespace kino
             if (selectedSeatsList.Contains(seatName))
             {
                 selectedSeatsList.Remove(seatName);
-                clickedButton.BackColor = Color.Black; // Deselect
+                clickedButton.BackColor = Color.Black; 
             }
             else
             {
                 selectedSeatsList.Add(seatName);
-                clickedButton.BackColor = Color.Gray; // Temporarily select
+                clickedButton.BackColor = Color.Gray; 
             }
         }
 
@@ -158,6 +175,13 @@ namespace kino
                     btn.Enabled = !(selectedSeats.ContainsKey(seatName) && selectedSeats[seatName]);
                 }
             }
+        }
+
+        private void button18_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            User_choose user_Choose = new User_choose();
+            user_Choose.Show();
         }
     }
 }
